@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${profile.fullName} + ' — Developer Profile'"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="public-page">
+
+    <header class="hero">
+        <p class="eyebrow">Developer Profile</p>
+        <h1 th:text="${profile.fullName}"></h1>
+        <p class="headline" th:text="${profile.headline}"></p>
+        <p class="location" th:if="${profile.location}" th:text="${profile.location}"></p>
+
+        <div class="hero-actions">
+            <a th:if="${profile.cvUrl}" th:href="${profile.cvUrl}" target="_blank" class="btn btn-primary">Download CV</a>
+            <a th:href="'mailto:' + ${profile.contactEmail}" class="btn btn-secondary">Contact</a>
+        </div>
+
+        <div class="stat-row">
+            <div>
+                <div class="stat-num" th:text="${profile.projects.size()}"></div>
+                <div class="stat-label">Projects</div>
+            </div>
+        </div>
+    </header>
+
+    <section th:if="${profile.summary}">
+        <div class="section-label"><span class="num">01</span><h2>About</h2></div>
+        <p th:text="${profile.summary}"></p>
+    </section>
+
+    <section>
+        <div class="section-label"><span class="num">02</span><h2>Projects</h2></div>
+        <div class="project-grid">
+            <article class="project-card" th:each="project : ${profile.projects}">
+                <h3 th:text="${project.name}"></h3>
+                <p th:text="${project.description}"></p>
+                <p class="tech-stack" th:if="${project.techStack}" th:text="${project.techStack}"></p>
+                <div class="project-links">
+                    <a th:if="${project.repoUrl}" th:href="${project.repoUrl}" target="_blank">Repo →</a>
+                    <a th:if="${project.liveUrl}" th:href="${project.liveUrl}" target="_blank">Live →</a>
+                </div>
+            </article>
+        </div>
+        <p th:if="${profile.projects.isEmpty()}" class="hint">No projects added yet.</p>
+    </section>
+
+    <footer class="public-footer">
+        <div class="section-label"><span class="num">03</span><h2>Contact</h2></div>
+        <p><a th:href="'mailto:' + ${profile.contactEmail}" th:text="${profile.contactEmail}"></a></p>
+        <p th:if="${profile.contactPhone}" th:text="${profile.contactPhone}"></p>
+    </footer>
+</div>
+</body>
+</html>

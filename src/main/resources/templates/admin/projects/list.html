@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your projects</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-shell">
+    <nav class="admin-nav">
+        <span class="brand">Admin</span>
+        <a th:href="@{/admin}">Profile</a>
+        <a th:href="@{/admin/projects}">Projects</a>
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="link-button">Log out</button>
+        </form>
+    </nav>
+
+    <main>
+        <h1>Projects</h1>
+        <p th:if="${success}" class="success-banner" th:text="${success}"></p>
+        <a class="btn btn-primary" th:href="@{/admin/projects/new}">Add project</a>
+
+        <table class="admin-table">
+            <tr th:each="item : ${items}">
+                <td th:text="${item.name}"></td>
+                <td th:text="${item.techStack}"></td>
+                <td>
+                    <a th:href="@{'/admin/projects/' + ${item.id} + '/edit'}">Edit</a>
+                    <form th:action="@{'/admin/projects/' + ${item.id} + '/delete'}" method="post" class="inline-form">
+                        <button type="submit" class="link-button" onclick="return confirm('Delete this project?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <p th:if="${items.isEmpty()}">No projects yet.</p>
+    </main>
+</div>
+</body>
+</html>

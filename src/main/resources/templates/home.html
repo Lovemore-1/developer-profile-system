@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Developer Profile System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="landing">
+    <h1>Developer Profile System</h1>
+    <p>Create your professional profile, manage it securely, and share one link.</p>
+    <div class="landing-actions">
+        <a class="btn btn-primary" th:href="@{/register}">Create your profile</a>
+        <a class="btn btn-secondary" th:href="@{/login}">Log in</a>
+    </div>
+    <p class="hint">Already have a profile? Visit <code>/u/&lt;your-username&gt;</code> to see it live.</p>
+</div>
+</body>
+</html>
