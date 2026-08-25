@@ -25,8 +25,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdminAccountSeeder implements CommandLineRunner {
 
-    private static final String ADMIN_USERNAME = "Munetsadmin";
+    private static final String ADMIN_USERNAME = "Munetsiadmin@gmail.com";
     private static final String ADMIN_PASSWORD = "password";
+
+    // Every username this account has previously been seeded under. Kept as
+    // a running list (not just the most recent one) so switching the admin
+    // username again later stays a one-line change here instead of leaving
+    // orphaned accounts behind each time.
+    private static final String[] LEGACY_USERNAMES = { "admin", "Munetsadmin" };
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
@@ -39,12 +45,9 @@ public class AdminAccountSeeder implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** The original hardcoded username from an earlier version of this seeder. */
-    private static final String OLD_ADMIN_USERNAME = "admin";
-
     @Override
     public void run(String... args) {
-        removeLeftoverOldAdminAccount();
+        removeLeftoverLegacyAdminAccounts();
 
         if (userRepository.findByUsername(ADMIN_USERNAME).isPresent()) {
             return; // already seeded on a previous run
@@ -63,24 +66,25 @@ public class AdminAccountSeeder implements CommandLineRunner {
         profile.setOwner(admin);
         profile.setFullName("Site Administrator");
         profile.setHeadline("Administrator account");
-        profile.setContactEmail("admin@devprofile.local");
+        profile.setContactEmail(ADMIN_USERNAME);
         profileRepository.save(profile);
 
         System.out.println("Seeded admin account -> username: " + ADMIN_USERNAME + " / password: " + ADMIN_PASSWORD);
     }
 
     /**
-     * One-time cleanup: an earlier version of this class always seeded the
-     * account as "admin" / "admin123". Since the username changed, delete
-     * that leftover account (and its profile) so there's only ever one
-     * admin login floating around, not two. Once it's gone this is a no-op
-     * on every future startup.
+     * One-time cleanup: every previous username this seeder has ever used
+     * (see LEGACY_USERNAMES) gets deleted if it still exists, so there's
+     * only ever the current admin login floating around, not several old
+     * ones left behind from earlier in development.
      */
-    private void removeLeftoverOldAdminAccount() {
-        userRepository.findByUsername(OLD_ADMIN_USERNAME).ifPresent(oldAdmin -> {
-            profileRepository.findByOwnerUsername(OLD_ADMIN_USERNAME).ifPresent(profileRepository::delete);
-            userRepository.delete(oldAdmin);
-            System.out.println("Removed leftover old admin account: " + OLD_ADMIN_USERNAME);
-        });
+    private void removeLeftoverLegacyAdminAccounts() {
+        for (String legacyUsername : LEGACY_USERNAMES) {
+            userRepository.findByUsername(legacyUsername).ifPresent(oldAdmin -> {
+                profileRepository.findByOwnerUsername(legacyUsername).ifPresent(profileRepository::delete);
+                userRepository.delete(oldAdmin);
+                System.out.println("Removed leftover old admin account: " + legacyUsername);
+            });
+        }
     }
 }
