@@ -51,9 +51,25 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/register", "/login", "/css/**", "/error", "/u/**").permitAll()
+                // More specific matcher first: /admin/users needs ADMIN,
+                // everything else under /admin/** just needs to be logged in.
+                // Spring Security checks these in order and stops at the
+                // first match, so ordering here is load-bearing.
+                .requestMatchers("/admin/users").hasRole("ADMIN")
                 .requestMatchers("/admin/**").authenticated()
+                // H2 console is a local-only dev tool for looking inside the
+                // database file directly (see application.properties). It's
+                // never reachable in production because Render runs on
+                // Postgres, not H2, so this route simply won't exist there.
+                .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().permitAll()
             )
+            // The H2 console posts a login form and renders inside a frame -
+            // both of which Spring Security blocks by default (CSRF check,
+            // X-Frame-Options: DENY). Without these two lines the console
+            // loads as a blank white page.
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All accounts</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1>Registered accounts</h1>
+        <p class="hint">Every account on this system, visible only to ADMIN accounts. This is the backend-enforced admin function - the /admin/users route itself is locked to ROLE_ADMIN in SecurityConfig, not just hidden from the menu.</p>
+        <p th:if="${success}" class="success-banner" th:text="${success}"></p>
+        <p th:if="${error}" class="error-banner" th:text="${error}"></p>
+
+        <table class="admin-table">
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}"></td>
+                <td th:text="${u.username}"></td>
+                <td th:text="${u.role}"></td>
+                <td>
+                    <form th:if="${u.role == 'USER'}" th:action="@{'/admin/users/' + ${u.id} + '/role'}" method="post" class="inline-form">
+                        <input type="hidden" name="role" value="ADMIN">
+                        <button type="submit" class="link-button" onclick="return confirm('Make this account an ADMIN?')">Make admin</button>
+                    </form>
+                    <form th:if="${u.role == 'ADMIN'}" th:action="@{'/admin/users/' + ${u.id} + '/role'}" method="post" class="inline-form">
+                        <input type="hidden" name="role" value="USER">
+                        <button type="submit" class="link-button" onclick="return confirm('Remove admin access from this account?')">Make user</button>
+                    </form>
+                    <form th:action="@{'/admin/users/' + ${u.id} + '/delete'}" method="post" class="inline-form">
+                        <button type="submit" class="link-button" onclick="return confirm('Permanently delete this account and all their data?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </main>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Links</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1>Links</h1>
+        <p th:if="${success}" class="success-banner" th:text="${success}"></p>
+        <a class="btn btn-primary" th:href="@{/admin/links/new}">Add link</a>
+
+        <table class="admin-table">
+            <tr th:each="item : ${items}">
+                <td th:text="${item.label}"></td>
+                <td th:text="${item.url}"></td>
+                <td>
+                    <a th:href="@{'/admin/links/' + ${item.id} + '/edit'}">Edit</a>
+                    <form th:action="@{'/admin/links/' + ${item.id} + '/delete'}" method="post" class="inline-form">
+                        <button type="submit" class="link-button" onclick="return confirm('Delete this link?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <p th:if="${items.isEmpty()}">No links added yet.</p>
+    </main>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Education</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1>Education</h1>
+        <p th:if="${success}" class="success-banner" th:text="${success}"></p>
+        <a class="btn btn-primary" th:href="@{/admin/education/new}">Add education</a>
+
+        <table class="admin-table">
+            <tr th:each="item : ${items}">
+                <td>
+                    <strong th:text="${item.qualification}"></strong><br>
+                    <span th:text="${item.institution}"></span>
+                </td>
+                <td th:text="${item.startDate} + ' - ' + (${item.endDate} ?: 'Present')"></td>
+                <td>
+                    <a th:href="@{'/admin/education/' + ${item.id} + '/edit'}">Edit</a>
+                    <form th:action="@{'/admin/education/' + ${item.id} + '/delete'}" method="post" class="inline-form">
+                        <button type="submit" class="link-button" onclick="return confirm('Delete this entry?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <p th:if="${items.isEmpty()}">No education added yet.</p>
+    </main>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Education</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1 th:text="${education.id} != null ? 'Edit education' : 'Add education'"></h1>
+
+        <form th:action="${education.id} != null ? @{'/admin/education/' + ${education.id}} : @{/admin/education}"
+              th:object="${education}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <label for="institution">Institution</label>
+            <input type="text" id="institution" th:field="*{institution}">
+            <p class="field-error" th:if="${#fields.hasErrors('institution')}" th:errors="*{institution}"></p>
+
+            <label for="qualification">Qualification</label>
+            <input type="text" id="qualification" th:field="*{qualification}" placeholder="e.g. BSc Computer Science">
+            <p class="field-error" th:if="${#fields.hasErrors('qualification')}" th:errors="*{qualification}"></p>
+
+            <label for="fieldOfStudy">Field of study</label>
+            <input type="text" id="fieldOfStudy" th:field="*{fieldOfStudy}">
+
+            <label for="startDate">Start date</label>
+            <input type="date" id="startDate" th:field="*{startDate}">
+            <p class="field-error" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></p>
+
+            <label for="endDate">End date (leave blank if ongoing)</label>
+            <input type="date" id="endDate" th:field="*{endDate}">
+
+            <label for="description">Description</label>
+            <textarea id="description" rows="4" th:field="*{description}"></textarea>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </main>
+    </div>
+</div>
+</body>
+</html>

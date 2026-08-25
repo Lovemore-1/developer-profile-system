@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reference</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1 th:text="${reference.id} != null ? 'Edit reference' : 'Add reference'"></h1>
+
+        <form th:action="${reference.id} != null ? @{'/admin/references/' + ${reference.id}} : @{/admin/references}"
+              th:object="${reference}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <label for="name">Name</label>
+            <input type="text" id="name" th:field="*{name}">
+            <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+            <label for="position">Position</label>
+            <input type="text" id="position" th:field="*{position}">
+
+            <label for="organisation">Organisation</label>
+            <input type="text" id="organisation" th:field="*{organisation}">
+
+            <label for="email">Email</label>
+            <input type="text" id="email" th:field="*{email}">
+            <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" th:field="*{phone}">
+
+            <label for="relationship">Relationship</label>
+            <input type="text" id="relationship" th:field="*{relationship}" placeholder="e.g. Former manager">
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </main>
+    </div>
+</div>
+</body>
+</html>

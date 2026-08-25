@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Skill</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1 th:text="${skill.id} != null ? 'Edit skill' : 'Add skill'"></h1>
+
+        <form th:action="${skill.id} != null ? @{'/admin/skills/' + ${skill.id}} : @{/admin/skills}"
+              th:object="${skill}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <label for="name">Skill name</label>
+            <input type="text" id="name" th:field="*{name}" placeholder="e.g. Java">
+            <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+            <label for="category">Category</label>
+            <input type="text" id="category" th:field="*{category}" placeholder="e.g. Programming Language">
+            <p class="field-error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></p>
+
+            <label for="level">Level</label>
+            <select id="level" th:field="*{level}">
+                <option th:each="lvl : ${levels}" th:value="${lvl}" th:text="${lvl}"></option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </main>
+    </div>
+</div>
+</body>
+</html>

@@ -37,6 +37,24 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Education> education = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Experience> experience = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> skills = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Certification> certifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reference> references = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProfessionalLink> links = new ArrayList<>();
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public User getOwner() { return owner; }
@@ -57,4 +75,16 @@ public class Profile {
     public void setCvUrl(String cvUrl) { this.cvUrl = cvUrl; }
     public List<Project> getProjects() { return projects; }
     public void setProjects(List<Project> projects) { this.projects = projects; }
+    public List<Education> getEducation() { return education; }
+    public void setEducation(List<Education> education) { this.education = education; }
+    public List<Experience> getExperience() { return experience; }
+    public void setExperience(List<Experience> experience) { this.experience = experience; }
+    public List<Skill> getSkills() { return skills; }
+    public void setSkills(List<Skill> skills) { this.skills = skills; }
+    public List<Certification> getCertifications() { return certifications; }
+    public void setCertifications(List<Certification> certifications) { this.certifications = certifications; }
+    public List<Reference> getReferences() { return references; }
+    public void setReferences(List<Reference> references) { this.references = references; }
+    public List<ProfessionalLink> getLinks() { return links; }
+    public void setLinks(List<ProfessionalLink> links) { this.links = links; }
 }

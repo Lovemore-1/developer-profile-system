@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${profile.fullName} + ' - CV'"></title>
+    <style>
+        /*
+          Deliberately not using the site's dark maroon theme here. This page
+          is meant to be printed / saved as a PDF, and a dark background
+          either wastes ink or looks broken depending on the printer's
+          "background graphics" setting. A CV should read like a document,
+          not a webpage screenshot.
+        */
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #EDEBE8;
+            color: #1C1917;
+            font-family: 'Manrope', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .cv-toolbar {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem 2rem 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .print-btn {
+            background: #8F202B;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .cv-page {
+            max-width: 800px;
+            margin: 1rem auto 3rem;
+            background: #fff;
+            padding: 3rem 3.5rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+        }
+        .cv-header { border-bottom: 2px solid #1C1917; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .cv-header h1 { font-family: 'Fraunces', Georgia, serif; font-size: 2rem; margin: 0 0 0.2rem; }
+        .cv-header .headline { font-size: 1rem; color: #8F202B; font-weight: 700; margin: 0 0 0.6rem; }
+        .cv-contact { font-size: 0.85rem; color: #444; }
+        .cv-contact span { margin-right: 1.2rem; }
+
+        .cv-section { margin-bottom: 1.6rem; }
+        .cv-section h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8F202B;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.3rem;
+            margin: 0 0 0.8rem;
+        }
+        .cv-entry { margin-bottom: 0.9rem; }
+        .cv-entry-title { font-weight: 700; font-size: 0.95rem; }
+        .cv-entry-sub { color: #555; font-size: 0.85rem; }
+        .cv-entry-date { color: #777; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        .cv-entry p { margin: 0.3rem 0 0; font-size: 0.88rem; }
+
+        .skill-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .skill-pill { border: 1px solid #ccc; border-radius: 999px; padding: 0.25rem 0.7rem; font-size: 0.8rem; }
+
+        .cv-links a { color: #8F202B; text-decoration: none; font-size: 0.85rem; margin-right: 1rem; }
+
+        @media print {
+            body { background: #fff; }
+            .cv-toolbar { display: none; }
+            .cv-page { box-shadow: none; margin: 0; padding: 0; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="cv-toolbar">
+    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+<article class="cv-page">
+    <header class="cv-header">
+        <h1 th:text="${profile.fullName}"></h1>
+        <p class="headline" th:if="${profile.headline}" th:text="${profile.headline}"></p>
+        <p class="cv-contact">
+            <span th:if="${profile.contactEmail}" th:text="${profile.contactEmail}"></span>
+            <span th:if="${profile.contactPhone}" th:text="${profile.contactPhone}"></span>
+            <span th:if="${profile.location}" th:text="${profile.location}"></span>
+        </p>
+    </header>
+
+    <section class="cv-section" th:if="${profile.summary}">
+        <h2>Summary</h2>
+        <p th:text="${profile.summary}"></p>
+    </section>
+
+    <section class="cv-section" th:if="${!profile.experience.isEmpty()}">
+        <h2>Experience</h2>
+        <div class="cv-entry" th:each="job : ${profile.experience}">
+            <div class="cv-entry-title" th:text="${job.jobTitle}"></div>
+            <div class="cv-entry-sub" th:text="${job.company} + (${job.location} != null ? ' — ' + ${job.location} : '')"></div>
+            <div class="cv-entry-date" th:text="${job.startDate} + ' - ' + (${job.current} ? 'Present' : (${job.endDate} ?: ''))"></div>
+            <p th:if="${job.description}" th:text="${job.description}"></p>
+        </div>
+    </section>
+
+    <section class="cv-section" th:if="${!profile.education.isEmpty()}">
+        <h2>Education</h2>
+        <div class="cv-entry" th:each="ed : ${profile.education}">
+            <div class="cv-entry-title" th:text="${ed.qualification}"></div>
+            <div class="cv-entry-sub" th:text="${ed.institution} + (${ed.fieldOfStudy} != null ? ' — ' + ${ed.fieldOfStudy} : '')"></div>
+            <div class="cv-entry-date" th:text="${ed.startDate} + ' - ' + (${ed.endDate} ?: 'Present')"></div>
+            <p th:if="${ed.description}" th:text="${ed.description}"></p>
+        </div>
+    </section>
+
+    <section class="cv-section" th:if="${!profile.skills.isEmpty()}">
+        <h2>Skills</h2>
+        <div class="skill-pills">
+            <span class="skill-pill" th:each="skill : ${profile.skills}"
+                  th:text="${skill.name} + (${skill.level} != null ? ' (' + ${skill.level} + ')' : '')"></span>
+        </div>
+    </section>
+
+    <section class="cv-section" th:if="${!profile.projects.isEmpty()}">
+        <h2>Projects</h2>
+        <div class="cv-entry" th:each="project : ${profile.projects}">
+            <div class="cv-entry-title" th:text="${project.name}"></div>
+            <div class="cv-entry-sub" th:if="${project.techStack}" th:text="${project.techStack}"></div>
+            <p th:if="${project.description}" th:text="${project.description}"></p>
+        </div>
+    </section>
+
+    <section class="cv-section" th:if="${!profile.certifications.isEmpty()}">
+        <h2>Certifications</h2>
+        <div class="cv-entry" th:each="cert : ${profile.certifications}">
+            <div class="cv-entry-title" th:text="${cert.name}"></div>
+            <div class="cv-entry-sub" th:text="${cert.issuer} + (${cert.dateEarned} != null ? ' — ' + ${cert.dateEarned} : '')"></div>
+        </div>
+    </section>
+
+    <section class="cv-section" th:if="${!profile.links.isEmpty()}">
+        <h2>Links</h2>
+        <div class="cv-links">
+            <a th:each="link : ${profile.links}" th:href="${link.url}" th:text="${link.label}"></a>
+        </div>
+    </section>
+
+    <section class="cv-section" th:if="${!profile.references.isEmpty()}">
+        <h2>References</h2>
+        <div class="cv-entry" th:each="ref : ${profile.references}">
+            <div class="cv-entry-title" th:text="${ref.name}"></div>
+            <div class="cv-entry-sub" th:text="${ref.position} + (${ref.organisation} != null ? ', ' + ${ref.organisation} : '')"></div>
+            <div class="cv-entry-sub" th:if="${ref.email}" th:text="${ref.email}"></div>
+        </div>
+    </section>
+</article>
+</body>
+</html>

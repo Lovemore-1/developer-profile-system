@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Your projects</title>
+    <title>Skills</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -10,23 +10,24 @@
     <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
     <div class="admin-shell">
     <main>
-        <h1>Projects</h1>
+        <h1>Skills</h1>
         <p th:if="${success}" class="success-banner" th:text="${success}"></p>
-        <a class="btn btn-primary" th:href="@{/admin/projects/new}">Add project</a>
+        <a class="btn btn-primary" th:href="@{/admin/skills/new}">Add skill</a>
 
         <table class="admin-table">
             <tr th:each="item : ${items}">
                 <td th:text="${item.name}"></td>
-                <td th:text="${item.techStack}"></td>
+                <td th:text="${item.category}"></td>
+                <td th:text="${item.level}"></td>
                 <td>
-                    <a th:href="@{'/admin/projects/' + ${item.id} + '/edit'}">Edit</a>
-                    <form th:action="@{'/admin/projects/' + ${item.id} + '/delete'}" method="post" class="inline-form">
-                        <button type="submit" class="link-button" onclick="return confirm('Delete this project?')">Delete</button>
+                    <a th:href="@{'/admin/skills/' + ${item.id} + '/edit'}">Edit</a>
+                    <form th:action="@{'/admin/skills/' + ${item.id} + '/delete'}" method="post" class="inline-form">
+                        <button type="submit" class="link-button" onclick="return confirm('Delete this skill?')">Delete</button>
                     </form>
                 </td>
             </tr>
         </table>
-        <p th:if="${items.isEmpty()}">No projects yet.</p>
+        <p th:if="${items.isEmpty()}">No skills added yet.</p>
     </main>
     </div>
 </div>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Shared admin nav bar. Every /admin/** page includes this instead of
+  repeating the same links eight times. th:replace pulls this fragment
+  into the including page at render time.
+-->
+<nav th:fragment="admin-nav" class="admin-nav">
+    <span class="brand">Admin</span>
+    <a th:href="@{/admin}">Profile</a>
+    <a th:href="@{/admin/projects}">Projects</a>
+    <a th:href="@{/admin/education}">Education</a>
+    <a th:href="@{/admin/experience}">Experience</a>
+    <a th:href="@{/admin/skills}">Skills</a>
+    <a th:href="@{/admin/certifications}">Certifications</a>
+    <a th:href="@{/admin/references}">References</a>
+    <a th:href="@{/admin/links}">Links</a>
+    <form th:action="@{/logout}" method="post" class="logout-form">
+        <button type="submit" class="link-button">Log out</button>
+    </form>
+</nav>
+</body>
+</html>

@@ -6,49 +6,115 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<div class="admin-shell">
-    <nav class="admin-nav">
-        <span class="brand">Admin</span>
-        <a th:href="@{/admin}">Profile</a>
-        <a th:href="@{/admin/projects}">Projects</a>
-        <a th:href="@{'/u/' + ${profile.owner.username}}" target="_blank">View public page</a>
-        <form th:action="@{/logout}" method="post" class="logout-form">
-            <button type="submit" class="link-button">Log out</button>
-        </form>
-    </nav>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
 
-    <main>
-        <h1>Your profile</h1>
+    <div class="admin-shell">
         <p th:if="${success}" class="success-banner" th:text="${success}"></p>
 
-        <form th:action="@{/admin/profile}" th:object="${profile}" method="post">
-            <label for="fullName">Full name</label>
-            <input type="text" id="fullName" th:field="*{fullName}">
-            <p class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
+        <div class="editor-preview-grid">
+            <!-- Editor -->
+            <section>
+                <div class="panel-heading">
+                    <h1>Personal information</h1>
+                </div>
+                <form id="profile-form" th:action="@{/admin/profile}" th:object="${profile}" method="post">
+                    <label for="fullName">Full name</label>
+                    <input type="text" id="fullName" th:field="*{fullName}">
+                    <p class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
 
-            <label for="headline">Headline</label>
-            <input type="text" id="headline" th:field="*{headline}">
-            <p class="field-error" th:if="${#fields.hasErrors('headline')}" th:errors="*{headline}"></p>
+                    <label for="headline">Professional title / headline</label>
+                    <input type="text" id="headline" th:field="*{headline}">
+                    <p class="field-error" th:if="${#fields.hasErrors('headline')}" th:errors="*{headline}"></p>
 
-            <label for="summary">Summary</label>
-            <textarea id="summary" rows="4" th:field="*{summary}"></textarea>
+                    <label for="summary">Professional summary</label>
+                    <textarea id="summary" rows="4" th:field="*{summary}"></textarea>
 
-            <label for="contactEmail">Contact email</label>
-            <input type="text" id="contactEmail" th:field="*{contactEmail}">
-            <p class="field-error" th:if="${#fields.hasErrors('contactEmail')}" th:errors="*{contactEmail}"></p>
+                    <label for="contactEmail">Email</label>
+                    <input type="text" id="contactEmail" th:field="*{contactEmail}">
+                    <p class="field-error" th:if="${#fields.hasErrors('contactEmail')}" th:errors="*{contactEmail}"></p>
 
-            <label for="contactPhone">Contact phone</label>
-            <input type="text" id="contactPhone" th:field="*{contactPhone}">
+                    <label for="contactPhone">Phone</label>
+                    <input type="text" id="contactPhone" th:field="*{contactPhone}">
 
-            <label for="location">Location</label>
-            <input type="text" id="location" th:field="*{location}">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" th:field="*{location}">
 
-            <label for="cvUrl">CV link (Google Drive, GitHub, etc.)</label>
-            <input type="text" id="cvUrl" th:field="*{cvUrl}" placeholder="https://...">
+                    <!-- No CV link field anymore: your CV is now generated straight from
+                         everything else you fill in here (Experience, Education, Skills, ...)
+                         and lives at /u/{username}/cv. Nothing to paste in manually. -->
 
-            <button type="submit" class="btn btn-primary">Save profile</button>
-        </form>
-    </main>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </section>
+
+            <!-- Live preview: a small vanilla-JS listener (bottom of this file)
+                 copies each field's value into the matching preview element on
+                 every keystroke (the "input" event), so this updates as you
+                 type - no page reload, no framework, no build step. It's
+                 still just a preview though: nothing here is real until you
+                 hit Save, which is what actually writes to the database. -->
+            <aside class="preview-panel">
+                <div class="panel-heading">
+                    <h2>Live preview</h2>
+                    <a th:if="${profileUsername}" th:href="@{'/u/' + ${profileUsername}}" target="_blank">View full page</a>
+                </div>
+                <div class="preview-card">
+                    <div class="avatar-circle" id="preview-avatar" th:text="${#strings.isEmpty(profile.fullName)} ? '?' : ${#strings.substring(profile.fullName,0,1)}"></div>
+                    <h3 id="preview-name" th:text="${#strings.isEmpty(profile.fullName)} ? 'Your name' : ${profile.fullName}"></h3>
+                    <p class="preview-headline" id="preview-headline" th:text="${profile.headline}"></p>
+                    <p class="preview-meta" id="preview-location" th:text="${profile.location}"></p>
+                    <p class="preview-meta" id="preview-email" th:text="${profile.contactEmail}"></p>
+                    <p class="preview-meta" id="preview-phone" th:text="${profile.contactPhone}"></p>
+                    <div class="hero-actions">
+                        <a th:if="${profileUsername}" th:href="@{'/u/' + ${profileUsername} + '/cv'}" target="_blank" class="btn btn-primary">Download CV</a>
+                        <a th:if="${profile.contactEmail}" th:href="'mailto:' + ${profile.contactEmail}" class="btn btn-secondary">Contact</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
 </div>
+
+<script th:inline="javascript">
+    // Wires each input to the matching preview element. bind() reads the
+    // current value on page load first (so a page refresh doesn't show
+    // stale/blank preview text), then keeps them in sync on every keystroke.
+    function bind(inputId, previewId, opts) {
+        opts = opts || {};
+        var input = document.getElementById(inputId);
+        var preview = document.getElementById(previewId);
+        if (!input || !preview) return;
+
+        function sync() {
+            var value = input.value.trim();
+            if (opts.fallback && value === '') {
+                preview.textContent = opts.fallback;
+            } else if (opts.firstLetterOf) {
+                var source = document.getElementById(opts.firstLetterOf).value.trim();
+                preview.textContent = source ? source.charAt(0).toUpperCase() : '?';
+            } else {
+                preview.textContent = value;
+            }
+            // Fields that are hidden entirely when empty (location/email/phone)
+            if (opts.hideWhenEmpty) {
+                preview.style.display = value ? '' : 'none';
+            }
+        }
+
+        input.addEventListener('input', sync);
+        sync();
+    }
+
+    bind('fullName', 'preview-name', { fallback: 'Your name' });
+    bind('fullName', 'preview-avatar', { firstLetterOf: 'fullName' });
+    bind('headline', 'preview-headline', { hideWhenEmpty: true });
+    bind('location', 'preview-location', { hideWhenEmpty: true });
+    bind('contactEmail', 'preview-email', { hideWhenEmpty: true });
+    bind('contactPhone', 'preview-phone', { hideWhenEmpty: true });
+
+    // Re-sync avatar specifically when fullName changes (bind() above already
+    // attaches its own listener to fullName for the avatar target too).
+</script>
 </body>
 </html>

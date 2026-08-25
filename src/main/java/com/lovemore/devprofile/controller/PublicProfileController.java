@@ -30,4 +30,18 @@ public class PublicProfileController {
         model.addAttribute("profile", profile);
         return "public/profile";
     }
+
+    /**
+     * Real DB-driven CV, not a static file. Same lookup as the profile page,
+     * different template - one that's laid out for printing. The "Download
+     * CV" flow is just this page plus the browser's own print-to-PDF, so
+     * whatever is saved is always the current database content.
+     */
+    @GetMapping("/u/{username}/cv")
+    public String viewCv(@PathVariable String username, Model model) {
+        var profile = profileRepository.findByOwnerUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile for " + username));
+        model.addAttribute("profile", profile);
+        return "public/cv";
+    }
 }

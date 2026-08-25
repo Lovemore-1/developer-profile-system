@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Persistent left sidebar for the whole /admin area. Replaces the old top
+  nav bar. th:replace pulls this into every admin page.
+
+  activePage is set by each controller (e.g. model.addAttribute("activePage",
+  "education")) so the matching link gets the "active" class - that's how
+  the sidebar knows which section you're currently in.
+-->
+<aside th:fragment="admin-sidebar" class="admin-sidebar">
+    <div class="sidebar-brand">
+        <svg viewBox="0 0 24 24" fill="none" class="icon"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Dev Profile</span>
+    </div>
+
+    <p class="sidebar-heading">Manage profile</p>
+    <a th:href="@{/admin}" th:classappend="${activePage == 'profile'} ? ' active'" class="sidebar-link">Personal</a>
+    <a th:href="@{/admin/experience}" th:classappend="${activePage == 'experience'} ? ' active'" class="sidebar-link">Experience</a>
+    <a th:href="@{/admin/education}" th:classappend="${activePage == 'education'} ? ' active'" class="sidebar-link">Education</a>
+    <a th:href="@{/admin/skills}" th:classappend="${activePage == 'skills'} ? ' active'" class="sidebar-link">Skills</a>
+    <a th:href="@{/admin/projects}" th:classappend="${activePage == 'projects'} ? ' active'" class="sidebar-link">Projects</a>
+    <a th:href="@{/admin/certifications}" th:classappend="${activePage == 'certifications'} ? ' active'" class="sidebar-link">Certifications</a>
+    <a th:href="@{/admin/references}" th:classappend="${activePage == 'references'} ? ' active'" class="sidebar-link">References</a>
+    <a th:href="@{/admin/links}" th:classappend="${activePage == 'links'} ? ' active'" class="sidebar-link">Links</a>
+
+    <p class="sidebar-heading" th:if="${isAdmin}">Administration</p>
+    <a th:if="${isAdmin}" th:href="@{/admin/users}" th:classappend="${activePage == 'users'} ? ' active'" class="sidebar-link">Users</a>
+
+    <div class="sidebar-footer">
+        <a th:if="${profileUsername}" th:href="@{'/u/' + ${profileUsername}}" target="_blank" class="sidebar-link">View public page</a>
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="link-button">Log out</button>
+        </form>
+    </div>
+</aside>
+</body>
+</html>

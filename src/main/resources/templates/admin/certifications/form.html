@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Certification</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1 th:text="${certification.id} != null ? 'Edit certification' : 'Add certification'"></h1>
+
+        <form th:action="${certification.id} != null ? @{'/admin/certifications/' + ${certification.id}} : @{/admin/certifications}"
+              th:object="${certification}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <label for="name">Certification name</label>
+            <input type="text" id="name" th:field="*{name}">
+            <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+            <label for="issuer">Issuer</label>
+            <input type="text" id="issuer" th:field="*{issuer}" placeholder="e.g. AWS, Coursera">
+
+            <label for="dateEarned">Date earned</label>
+            <input type="date" id="dateEarned" th:field="*{dateEarned}">
+
+            <label for="verificationUrl">Verification link</label>
+            <input type="text" id="verificationUrl" th:field="*{verificationUrl}" placeholder="https://...">
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </main>
+    </div>
+</div>
+</body>
+</html>

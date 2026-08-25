@@ -7,16 +7,20 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div th:replace="~{fragments/header :: site-header}"></div>
 <div class="public-page">
 
     <header class="hero">
         <p class="eyebrow">Developer Profile</p>
         <h1 th:text="${profile.fullName}"></h1>
         <p class="headline" th:text="${profile.headline}"></p>
-        <p class="location" th:if="${profile.location}" th:text="${profile.location}"></p>
+        <p class="location" th:if="${profile.location}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-7.58 7-12.5A7 7 0 0 0 5 9.5C5 14.42 12 22 12 22Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span th:text="${profile.location}"></span>
+        </p>
 
         <div class="hero-actions">
-            <a th:if="${profile.cvUrl}" th:href="${profile.cvUrl}" target="_blank" class="btn btn-primary">Download CV</a>
+            <a th:href="@{'/u/' + ${profile.owner.username} + '/cv'}" target="_blank" class="btn btn-primary">Download CV</a>
             <a th:href="'mailto:' + ${profile.contactEmail}" class="btn btn-secondary">Contact</a>
         </div>
 
@@ -25,35 +29,140 @@
                 <div class="stat-num" th:text="${profile.projects.size()}"></div>
                 <div class="stat-label">Projects</div>
             </div>
+            <div>
+                <div class="stat-num" th:text="${profile.experience.size()}"></div>
+                <div class="stat-label">Roles</div>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${profile.skills.size()}"></div>
+                <div class="stat-label">Skills</div>
+            </div>
+            <div>
+                <div class="stat-num" th:text="${profile.certifications.size()}"></div>
+                <div class="stat-label">Certifications</div>
+            </div>
         </div>
     </header>
 
-    <section th:if="${profile.summary}">
-        <div class="section-label"><span class="num">01</span><h2>About</h2></div>
-        <p th:text="${profile.summary}"></p>
-    </section>
+    <!--
+      Below the hero, everything switches to a 3-column magazine grid instead
+      of one long stacked column: a narrow "about you" column on the left,
+      your work history in the middle, and your projects/credentials/contact
+      on the right. On narrow screens (see .profile-grid in style.css) this
+      collapses back to a single column automatically.
+    -->
+    <div class="profile-grid">
 
-    <section>
-        <div class="section-label"><span class="num">02</span><h2>Projects</h2></div>
-        <div class="project-grid">
-            <article class="project-card" th:each="project : ${profile.projects}">
-                <h3 th:text="${project.name}"></h3>
-                <p th:text="${project.description}"></p>
-                <p class="tech-stack" th:if="${project.techStack}" th:text="${project.techStack}"></p>
-                <div class="project-links">
-                    <a th:if="${project.repoUrl}" th:href="${project.repoUrl}" target="_blank">Repo →</a>
-                    <a th:if="${project.liveUrl}" th:href="${project.liveUrl}" target="_blank">Live →</a>
+        <!-- Column 1: About + Skills -->
+        <div class="profile-col profile-col-narrow">
+            <section th:if="${profile.summary}">
+                <div class="section-label"><span class="num">01</span><h2>About</h2></div>
+                <p th:text="${profile.summary}"></p>
+            </section>
+
+            <section th:if="${!profile.skills.isEmpty()}">
+                <div class="section-label"><span class="num">02</span><h2>Skills</h2></div>
+                <div class="skill-tags">
+                    <span class="skill-tag" th:each="skill : ${profile.skills}"
+                          th:text="${skill.name} + (${skill.level} != null ? ' · ' + ${skill.level} : '')"></span>
                 </div>
-            </article>
-        </div>
-        <p th:if="${profile.projects.isEmpty()}" class="hint">No projects added yet.</p>
-    </section>
+            </section>
 
-    <footer class="public-footer">
-        <div class="section-label"><span class="num">03</span><h2>Contact</h2></div>
-        <p><a th:href="'mailto:' + ${profile.contactEmail}" th:text="${profile.contactEmail}"></a></p>
-        <p th:if="${profile.contactPhone}" th:text="${profile.contactPhone}"></p>
-    </footer>
+            <section th:if="${!profile.links.isEmpty()}">
+                <div class="section-label"><span class="num">03</span><h2>Links</h2></div>
+                <div class="project-links links-stacked">
+                    <a th:each="link : ${profile.links}" th:href="${link.url}" target="_blank" th:text="${link.label}"></a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Column 2: Experience + Education -->
+        <div class="profile-col">
+            <section th:if="${!profile.experience.isEmpty()}">
+                <div class="section-label"><span class="num">04</span><h2>Experience</h2></div>
+                <div class="timeline">
+                    <article class="timeline-item" th:each="job : ${profile.experience}">
+                        <h3 th:text="${job.jobTitle}"></h3>
+                        <p class="tech-stack" th:text="${job.company} + (${job.location} != null ? ' — ' + ${job.location} : '')"></p>
+                        <p class="date-range" th:text="${job.startDate} + ' - ' + (${job.current} ? 'Present' : (${job.endDate} ?: ''))"></p>
+                        <p th:if="${job.description}" th:text="${job.description}"></p>
+                    </article>
+                </div>
+            </section>
+
+            <section th:if="${!profile.education.isEmpty()}">
+                <div class="section-label"><span class="num">05</span><h2>Education</h2></div>
+                <div class="timeline">
+                    <article class="timeline-item" th:each="ed : ${profile.education}">
+                        <h3 th:text="${ed.qualification}"></h3>
+                        <p class="tech-stack" th:text="${ed.institution} + (${ed.fieldOfStudy} != null ? ' — ' + ${ed.fieldOfStudy} : '')"></p>
+                        <p class="date-range" th:text="${ed.startDate} + ' - ' + (${ed.endDate} ?: 'Present')"></p>
+                        <p th:if="${ed.description}" th:text="${ed.description}"></p>
+                    </article>
+                </div>
+            </section>
+        </div>
+
+        <!-- Column 3: Projects + Certifications + References + Contact -->
+        <div class="profile-col">
+            <section>
+                <div class="section-label"><span class="num">06</span><h2>Projects</h2></div>
+                <div class="project-grid project-grid-stack">
+                    <article class="project-card" th:each="project : ${profile.projects}">
+                        <h3 th:text="${project.name}"></h3>
+                        <p th:text="${project.description}"></p>
+                        <p class="tech-stack" th:if="${project.techStack}" th:text="${project.techStack}"></p>
+                        <div class="project-links">
+                            <a th:if="${project.repoUrl}" th:href="${project.repoUrl}" target="_blank">
+                                <svg class="icon-sm" viewBox="0 0 24 24" fill="none"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.7 3.3 5.6 3.6 5.6 3.6a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.2 10c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Repo
+                            </a>
+                            <a th:if="${project.liveUrl}" th:href="${project.liveUrl}" target="_blank">
+                                <svg class="icon-sm" viewBox="0 0 24 24" fill="none"><path d="M14 3h7v7m0-7L10 14M5 5h6a1 1 0 0 1 1 1v.5M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Live
+                            </a>
+                        </div>
+                    </article>
+                </div>
+                <p th:if="${profile.projects.isEmpty()}" class="hint">No projects added yet.</p>
+            </section>
+
+            <section th:if="${!profile.certifications.isEmpty()}">
+                <div class="section-label"><span class="num">07</span><h2>Certifications</h2></div>
+                <div class="timeline">
+                    <article class="timeline-item" th:each="cert : ${profile.certifications}">
+                        <h3 th:text="${cert.name}"></h3>
+                        <p class="tech-stack" th:if="${cert.issuer}" th:text="${cert.issuer}"></p>
+                        <p class="date-range" th:if="${cert.dateEarned}" th:text="${cert.dateEarned}"></p>
+                        <a th:if="${cert.verificationUrl}" th:href="${cert.verificationUrl}" target="_blank">Verify</a>
+                    </article>
+                </div>
+            </section>
+
+            <section th:if="${!profile.references.isEmpty()}">
+                <div class="section-label"><span class="num">08</span><h2>References</h2></div>
+                <div class="timeline">
+                    <article class="timeline-item" th:each="ref : ${profile.references}">
+                        <h3 th:text="${ref.name}"></h3>
+                        <p class="tech-stack" th:text="${ref.position} + (${ref.organisation} != null ? ', ' + ${ref.organisation} : '')"></p>
+                        <p th:if="${ref.email}" th:text="${ref.email}"></p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="public-footer">
+                <div class="section-label"><span class="num">09</span><h2>Contact</h2></div>
+                <p>
+                    <svg class="icon-sm" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="m3 7 9 6 9-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                    <a th:href="'mailto:' + ${profile.contactEmail}" th:text="${profile.contactEmail}"></a>
+                </p>
+                <p th:if="${profile.contactPhone}">
+                    <svg class="icon-sm" viewBox="0 0 24 24" fill="none"><path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1.2 1.2 0 0 1 1.2-.3 11 11 0 0 0 3.5.6 1.2 1.2 0 0 1 1.2 1.2V20a1.2 1.2 0 0 1-1.2 1.2A16.8 16.8 0 0 1 3 4.4 1.2 1.2 0 0 1 4.2 3.2H7a1.2 1.2 0 0 1 1.2 1.2 11 11 0 0 0 .6 3.5 1.2 1.2 0 0 1-.3 1.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                    <span th:text="${profile.contactPhone}"></span>
+                </p>
+            </section>
+        </div>
+    </div>
 </div>
 </body>
 </html>

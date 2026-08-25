@@ -6,12 +6,9 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<div class="admin-shell">
-    <nav class="admin-nav">
-        <span class="brand">Admin</span>
-        <a th:href="@{/admin}">Profile</a>
-        <a th:href="@{/admin/projects}">Projects</a>
-    </nav>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
     <main>
         <h1 th:text="${project.id} != null ? 'Edit project' : 'Add project'"></h1>
 
@@ -39,6 +36,7 @@
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </main>
+    </div>
 </div>
 </body>
 </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>References</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <aside th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></aside>
+    <div class="admin-shell">
+    <main>
+        <h1>References</h1>
+        <p th:if="${success}" class="success-banner" th:text="${success}"></p>
+        <a class="btn btn-primary" th:href="@{/admin/references/new}">Add reference</a>
+
+        <table class="admin-table">
+            <tr th:each="item : ${items}">
+                <td>
+                    <strong th:text="${item.name}"></strong><br>
+                    <span th:text="${item.position} + (${item.organisation} != null ? ', ' + ${item.organisation} : '')"></span>
+                </td>
+                <td th:text="${item.relationship}"></td>
+                <td>
+                    <a th:href="@{'/admin/references/' + ${item.id} + '/edit'}">Edit</a>
+                    <form th:action="@{'/admin/references/' + ${item.id} + '/delete'}" method="post" class="inline-form">
+                        <button type="submit" class="link-button" onclick="return confirm('Delete this reference?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <p th:if="${items.isEmpty()}">No references added yet.</p>
+    </main>
+    </div>
+</div>
+</body>
+</html>

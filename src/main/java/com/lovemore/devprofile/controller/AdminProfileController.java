@@ -7,9 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -29,6 +29,28 @@ public class AdminProfileController {
 
     public AdminProfileController(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
+    }
+
+    /**
+     * Runs before every handler in this controller and feeds the sidebar
+     * fragment what it needs: which link to highlight, and the username
+     * for the "View public page" link. Keeps that logic out of every
+     * individual GET method.
+     */
+    @ModelAttribute("activePage")
+    public String activePage() {
+        return "profile";
+    }
+
+    @ModelAttribute("profileUsername")
+    public String profileUsername(java.security.Principal principal) {
+        return principal.getName();
+    }
+
+    @ModelAttribute("isAdmin")
+    public boolean isAdmin(org.springframework.security.core.Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 
     @GetMapping
