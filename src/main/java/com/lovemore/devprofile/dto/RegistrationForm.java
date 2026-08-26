@@ -6,17 +6,10 @@ import jakarta.validation.constraints.Size;
 
 /**
  * NOT an entity - this is a plain form-backing object, deliberately separate
- * from User. It exists so validation rules for "signing up" (min password
- * length, must be a real email, etc.) don't have to live on the User entity
- * itself, and so the raw password field passing through here never touches
- * the database directly - RegistrationController hashes it before ever
- * constructing a User.
- *
- * The field is still called "username" internally (that's what Spring
- * Security's login form and UserDetailsService expect), but @Email forces
- * whatever gets typed into it to actually look like an email address -
- * "sdf" or "admin" will now fail validation and re-show the form with an
- * error instead of creating an account.
+ * from User. Validation rules for "signing up" (must be a real email,
+ * password length, the two password fields must match) live here instead
+ * of on the User entity, and the raw password never touches the database -
+ * RegistrationController hashes it before ever constructing a User.
  */
 public class RegistrationForm {
 
@@ -29,8 +22,13 @@ public class RegistrationForm {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
+    @NotBlank(message = "Please confirm your password")
+    private String confirmPassword;
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    public String getConfirmPassword() { return confirmPassword; }
+    public void setConfirmPassword(String confirmPassword) { this.confirmPassword = confirmPassword; }
 }

@@ -19,9 +19,15 @@ import org.springframework.security.web.SecurityFilterChain;
  *  - "/", "/u/**" (public profiles), "/register", "/login" are open to anyone.
  *  - "/admin/**" requires a logged-in account (any authenticated user - not
  *    a specific role - because every registered user should be able to
- *    manage their OWN profile, not just a site admin).
+ *    manage their OWN profile, not just a site admin). "/admin/users" is
+ *    further restricted to ROLE_ADMIN.
  *  - Registration creates real accounts backed by our own User table,
  *    passwords hashed with BCrypt, never stored or compared as plain text.
+ *  - Google sign-in is a second, parallel way to authenticate. It's wired
+ *    through GoogleOidcUserService, which creates a normal User+Profile the
+ *    first time someone uses it, so everything downstream (ownership
+ *    checks, /admin, /u/{username}) treats a Google login exactly the same
+ *    as a normal email/password one.
  */
 @Configuration
 @EnableWebSecurity
@@ -47,7 +53,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, GoogleOidcUserService googleOidcUserService) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/register", "/login", "/css/**", "/error", "/u/**").permitAll()
@@ -62,6 +68,10 @@ public class SecurityConfig {
                 // never reachable in production because Render runs on
                 // Postgres, not H2, so this route simply won't exist there.
                 .requestMatchers("/h2-console/**").permitAll()
+                // /oauth2/** and /login/oauth2/** (Spring Security's default
+                // Google sign-in start/callback URLs) fall through to this
+                // final permitAll anyway - listed here only as documentation
+                // that they're intentionally open, not an oversight.
                 .anyRequest().permitAll()
             )
             // The H2 console posts a login form and renders inside a frame -
@@ -76,6 +86,11 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/admin", true)
                 .failureUrl("/login?error")
                 .permitAll()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .defaultSuccessUrl("/admin", true)
+                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(googleOidcUserService))
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")

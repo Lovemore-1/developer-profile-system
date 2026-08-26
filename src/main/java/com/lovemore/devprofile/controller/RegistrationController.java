@@ -44,6 +44,17 @@ public class RegistrationController {
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("registrationForm") RegistrationForm form,
                             BindingResult result, Model model) {
+        // Bean Validation (@NotBlank, @Email, @Size on RegistrationForm) has
+        // already run by the time we get here. Comparing the two password
+        // fields against each other is a cross-field check, which plain
+        // annotations on a single field can't express - so it's done here
+        // by hand instead, and rejectValue attaches the error to the
+        // confirmPassword field specifically, the same way a failed @Email
+        // check attaches to username.
+        if (form.getPassword() != null && !form.getPassword().equals(form.getConfirmPassword())) {
+            result.rejectValue("confirmPassword", "mismatch", "Passwords do not match");
+        }
+
         if (result.hasErrors()) {
             return "register";
         }
@@ -64,7 +75,7 @@ public class RegistrationController {
         profile.setOwner(user);
         profile.setFullName(form.getUsername());
         profile.setHeadline("Add your headline in /admin");
-        profile.setContactEmail("you@example.com");
+        profile.setContactEmail(form.getUsername());
         profileRepository.save(profile);
 
         return "redirect:/login?registered";
