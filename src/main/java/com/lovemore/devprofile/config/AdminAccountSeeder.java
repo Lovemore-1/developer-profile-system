@@ -57,6 +57,7 @@ public class AdminAccountSeeder implements CommandLineRunner {
         admin.setUsername(ADMIN_USERNAME);
         admin.setPassword(passwordEncoder.encode(ADMIN_PASSWORD));
         admin.setRole("ADMIN");
+        admin.setEmailVerified(true); // seeded account, never goes through registration/OTP
         userRepository.save(admin);
 
         // Every User needs a Profile (Profile.owner is non-optional) even

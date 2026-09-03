@@ -57,6 +57,10 @@ public class GoogleOidcUserService extends OidcUserService {
             // password login path is never used for this account.
             user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
             user.setRole("USER");
+            // Google has already verified this address belongs to whoever
+            // just signed in - that's the whole point of OIDC - so this
+            // account skips the OTP flow entirely and is usable immediately.
+            user.setEmailVerified(true);
             userRepository.save(user);
 
             Profile profile = new Profile();

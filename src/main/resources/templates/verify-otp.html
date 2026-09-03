@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify your email</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/header :: site-header}"></div>
+<div class="auth-box">
+    <h1>Verify your email</h1>
+
+    <p th:if="${unverified}" class="error-banner">Please verify your email before logging in.</p>
+    <p th:if="${error}" class="error-banner" th:text="${error}"></p>
+    <p th:if="${resent}" class="success-banner">A new code has been sent.</p>
+
+    <p>We sent a 6-digit code to <strong th:text="${email}"></strong>. Enter it below - it expires in 10 minutes.</p>
+
+    <form th:action="@{/verify-otp}" method="post">
+        <input type="hidden" name="email" th:value="${email}">
+        <label for="code">Verification code</label>
+        <input type="text" id="code" name="code" maxlength="6" inputmode="numeric"
+               autocomplete="one-time-code" placeholder="123456">
+        <button type="submit" class="btn btn-primary">Verify</button>
+    </form>
+
+    <form th:action="@{/verify-otp/resend}" method="post">
+        <input type="hidden" name="email" th:value="${email}">
+        <button type="submit" class="btn btn-secondary">Resend code</button>
+    </form>
+
+    <p class="hint">Wrong email? <a th:href="@{/register}">Register again</a></p>
+</div>
+</body>
+</html>

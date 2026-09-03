@@ -16,18 +16,23 @@ import org.springframework.security.web.SecurityFilterChain;
  * The whole "authentication required, unauthorised visitors can't touch
  * management functionality" requirement lives here:
  *
- *  - "/", "/u/**" (public profiles), "/register", "/login" are open to anyone.
+ *  - "/", "/u/**" (public profiles), "/register", "/login", "/verify-otp**"
+ *    are open to anyone.
  *  - "/admin/**" requires a logged-in account (any authenticated user - not
  *    a specific role - because every registered user should be able to
  *    manage their OWN profile, not just a site admin). "/admin/users" is
  *    further restricted to ROLE_ADMIN.
  *  - Registration creates real accounts backed by our own User table,
  *    passwords hashed with BCrypt, never stored or compared as plain text.
+ *    A freshly registered account starts emailVerified=false and can't log
+ *    in (userDetailsService below marks it .disabled()) until the OTP sent
+ *    to their email is entered on /verify-otp.
  *  - Google sign-in is a second, parallel way to authenticate. It's wired
  *    through GoogleOidcUserService, which creates a normal User+Profile the
- *    first time someone uses it, so everything downstream (ownership
- *    checks, /admin, /u/{username}) treats a Google login exactly the same
- *    as a normal email/password one.
+ *    first time someone uses it (already marked emailVerified=true, since
+ *    Google has already proven that email), so everything downstream
+ *    (ownership checks, /admin, /u/{username}) treats a Google login
+ *    exactly the same as a normal email/password one.
  */
 @Configuration
 @EnableWebSecurity
@@ -44,19 +49,25 @@ public class SecurityConfig {
             com.lovemore.devprofile.entity.User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("No such user: " + username));
 
+            // .disabled(true) for an unverified account is what makes Spring
+            // Security throw DisabledException instead of a normal bad-
+            // credentials failure - LoginFailureHandler catches exactly that
+            // exception and routes to /verify-otp instead of /login?error.
             UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
                     .password(user.getPassword())
-                    .roles(user.getRole());
+                    .roles(user.getRole())
+                    .disabled(!user.isEmailVerified());
 
             return builder.build();
         };
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, GoogleOidcUserService googleOidcUserService) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, GoogleOidcUserService googleOidcUserService,
+                                            LoginFailureHandler loginFailureHandler) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/register", "/login", "/css/**", "/error", "/u/**").permitAll()
+                .requestMatchers("/", "/register", "/login", "/verify-otp", "/verify-otp/**", "/css/**", "/error", "/u/**").permitAll()
                 // More specific matcher first: /admin/users needs ADMIN,
                 // everything else under /admin/** just needs to be logged in.
                 // Spring Security checks these in order and stops at the
@@ -84,7 +95,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/admin", true)
-                .failureUrl("/login?error")
+                .failureHandler(loginFailureHandler)
                 .permitAll()
             )
             .oauth2Login(oauth2 -> oauth2

@@ -5,6 +5,7 @@ import com.lovemore.devprofile.entity.Profile;
 import com.lovemore.devprofile.entity.User;
 import com.lovemore.devprofile.repository.ProfileRepository;
 import com.lovemore.devprofile.repository.UserRepository;
+import com.lovemore.devprofile.service.OtpService;
 import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 /**
- * Anyone can reach /register (see SecurityConfig). Signing up does two
- * things in one transaction-ish sequence: creates the User (login identity)
- * and creates their empty starter Profile in the same step, so every
- * account always has exactly one profile to edit - the rest of the app
- * never has to handle "logged in but no profile yet".
+ * Anyone can reach /register (see SecurityConfig). Signing up does three
+ * things in sequence: creates the User (login identity), creates their
+ * empty starter Profile, and emails them a 6-digit code they have to enter
+ * on /verify-otp before the account can log in - see OtpService and
+ * SecurityConfig's userDetailsService (that's what actually enforces it).
  */
 @Controller
 public class RegistrationController {
@@ -27,12 +31,14 @@ public class RegistrationController {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OtpService otpService;
 
     public RegistrationController(UserRepository userRepository, ProfileRepository profileRepository,
-                                   PasswordEncoder passwordEncoder) {
+                                   PasswordEncoder passwordEncoder, OtpService otpService) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.passwordEncoder = passwordEncoder;
+        this.otpService = otpService;
     }
 
     @GetMapping("/register")
@@ -68,6 +74,12 @@ public class RegistrationController {
         user.setUsername(form.getUsername());
         user.setPassword(passwordEncoder.encode(form.getPassword())); // hash - never store raw
         user.setRole("USER");
+        // Every other path that creates a User (GoogleOidcUserService,
+        // AdminAccountSeeder) leaves this at its default of true. This is
+        // the one place it's explicitly false, because a plain email/
+        // password signup is the one case where we actually need proof the
+        // person typed a real, reachable email address.
+        user.setEmailVerified(false);
         userRepository.save(user);
 
         // Starter profile, placeholder text so it's editable from /admin immediately.
@@ -78,6 +90,9 @@ public class RegistrationController {
         profile.setContactEmail(form.getUsername());
         profileRepository.save(profile);
 
-        return "redirect:/login?registered";
+        otpService.issueNewCode(user);
+
+        String encodedEmail = URLEncoder.encode(form.getUsername(), StandardCharsets.UTF_8);
+        return "redirect:/verify-otp?email=" + encodedEmail;
     }
 }
