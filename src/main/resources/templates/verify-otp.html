@@ -8,6 +8,14 @@
 <body>
 <div th:replace="~{fragments/header :: site-header}"></div>
 <div class="auth-box">
+    <div class="auth-box-header">
+        <span class="window-controls">
+            <span class="control"></span>
+            <span class="control"></span>
+            <span class="control"></span>
+        </span>
+        <span class="auth-box-path">~/login</span>
+    </div>
     <h1>Verify your email</h1>
 
     <p th:if="${unverified}" class="error-banner">Please verify your email before logging in.</p>

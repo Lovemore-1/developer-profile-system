@@ -164,6 +164,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     border-color: var(--border-hover);
 }
 
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-primary:active {
+    background-color: var(--accent-bright);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary:active {
+    background-color: var(--surface-3);
+}
+
 .btn-small {
     padding: 0.35rem 0.75rem;
     min-height: auto;
@@ -773,6 +786,8 @@ select {
     padding: 0 0.8rem;
 }
 
+
+
 /* ==========================================================================
    7. PUBLIC PROFILE & PORTFOLIO COMPONENTS
    ========================================================================== */
@@ -1042,7 +1057,11 @@ select {
     grid-template-columns: 240px 1fr;
     min-height: 100vh;
     align-items: start;
-    background-color: var(--surface-2);
+    background-color: #f8fafc;
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
 }
 
 .admin-sidebar {
@@ -1053,8 +1072,121 @@ select {
     flex-direction: column;
     gap: 0.2rem;
     padding: 1.5rem 1.2rem;
-    background-color: var(--surface);
+    background: linear-gradient(to right, rgba(249, 87, 0, 0.12) 0%, var(--surface) 60%);
     border-right: 1px solid var(--border);
+}
+.admin-sidebar .sidebar-brand,
+.admin-sidebar .sidebar-heading,
+.admin-sidebar .sidebar-link,
+.admin-sidebar .link-button {
+    color: var(--slate-800);
+}
+
+.admin-sidebar .sidebar-link:hover,
+.admin-sidebar .link-button:hover {
+    color: var(--slate-950);
+}
+
+.admin-sidebar .sidebar-link.active {
+    color: var(--white);
+    background-color: var(--slate-900);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 1.5rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 0.9rem 1.25rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-table tr {
+    box-shadow: inset 3px 0 0 transparent;
+    transition: box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.admin-table tr:not(:last-child) td {
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-table tr:hover,
+.admin-table tr:focus-within {
+    box-shadow: inset 3px 0 0 var(--accent);
+    background-color: var(--surface-2);
+}
+
+.admin-table td {
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+/* Title / subtitle pattern — education, experience, certifications, references */
+.admin-table td strong {
+    display: block;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.15rem;
+}
+
+.admin-table td span {
+    color: var(--muted);
+    font-size: 0.875rem;
+}
+
+/* Structured values (dates, tech stack, URLs) read as data, not prose */
+.admin-table td:nth-child(2) {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--slate-600);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Actions stay quiet until the row is actually being looked at */
+.admin-table td:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.admin-table td:last-child a,
+.admin-table td:last-child .link-button {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 1.25rem;
+    margin-right: 0;
+    color: var(--muted);
+    opacity: 0.7;
+    transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.admin-table tr:hover td:last-child a,
+.admin-table tr:hover td:last-child .link-button,
+.admin-table td:last-child a:focus-visible,
+.admin-table td:last-child .link-button:focus-visible {
+    opacity: 1;
+}
+
+.admin-table td:last-child a:hover,
+.admin-table td:last-child a:focus-visible {
+    color: var(--accent);
+}
+
+.admin-table td:last-child .link-button:hover,
+.admin-table td:last-child .link-button:focus-visible {
+    color: var(--error);
 }
 
 .sidebar-brand {

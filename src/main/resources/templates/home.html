@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Developer Profile System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lovemore Munetsi — Software Engineer</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -14,46 +15,46 @@
                 <div class="brand-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 18l6-6-6-6C16 6 12 2 12 2S8 6 8 6L2 12l6 6s4 4 4 4 4-4 4-4z"/></svg>
                 </div>
-                DevSystem
+                Lovemore Munetsi
             </a>
 
             <nav>
                 <ul class="nav-links">
-                    <li><a href="#discover">Discover</a></li>
-                    <li><a href="#collaboration">Collaboration</a></li>
-                    <li><a href="#developers">Developers</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
 
             <div class="nav-actions">
+                <!-- This is your own admin access, not a public sign-up path.
+                     No "Create Profile" button here — there's only one profile
+                     on this site. -->
                 <a class="btn btn-secondary" th:href="@{/login}">Log in</a>
-                <a class="btn btn-primary" th:href="@{/register}">Create Profile</a>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero bg-grid">
+    <section class="hero bg-grid" id="about">
         <div class="container hero-grid">
             <div class="hero-content">
                 <div class="badge-enterprise">
                     <span class="badge-dot"></span>
-                    <span class="text-label">DEVELOPER NETWORK • OPEN COLLABORATION</span>
+                    <span class="text-label">SOFTWARE ENGINEER</span>
                 </div>
-                <h1 class="hero-title">Where Software Engineers Connect & Build Together</h1>
-                <p class="hero-subtitle">Create your verified professional developer identity, share your tech stack, discover like-minded peers, and launch open source or enterprise projects seamlessly.</p>
-                
-                <div class="hero-cta-group">
-                    <a class="btn btn-primary" th:href="@{/register}">Create Profile</a>
-                    <a class="btn btn-secondary" href="#discover">Explore Engineers</a>
-                </div>
+                <h1 class="hero-title">Building Scalable Web Apps &amp; Reliable Back-End Systems</h1>
 
-                <div class="social-proof">
-                    <div class="avatar-stack">
-                        <div></div><div></div><div></div>
-                    </div>
-                    <span>Joined by 10,000+ developers actively building together</span>
+                <p class="hero-subtitle">I'm Lovemore Munetsi, a software developer focused on clean architecture, scalable systems, and intuitive user experiences — from back-end APIs to the interfaces people actually use.</p>
+
+                <p class="tech-stack">Java · Spring Boot · Python · JavaScript · HTML5/CSS3 · JPA/Hibernate · PostgreSQL · REST APIs · Git</p>
+
+                <div class="hero-cta-group">
+                    <!-- TODO: point these at your real public profile once you
+                         know your username, e.g. /u/lovemore and /u/lovemore/cv -->
+                    <a class="btn btn-primary" href="#projects">View My Work</a>
+                    <a class="btn btn-secondary" href="#contact">Get In Touch</a>
                 </div>
             </div>
 
@@ -65,146 +66,116 @@
                         <span class="control"></span>
                         <span class="control"></span>
                     </div>
-                    <span class="code-title">GET /u/&lt;username&gt;</span>
+                    <!-- TODO: swap in your real username once you've picked one -->
+                    <span class="code-title">GET /u/lovemore</span>
                 </div>
                 <pre class="code-body"><code>{
   <span class="token-key">"status"</span>: <span class="token-string">"200_OK"</span>,
   <span class="token-key">"developer"</span>: {
-    <span class="token-key">"username"</span>: <span class="token-string">"alex-dev"</span>,
-    <span class="token-key">"role"</span>: <span class="token-string">"Full-Stack Software Engineer"</span>,
+    <span class="token-key">"username"</span>: <span class="token-string">"lovemore"</span>,
+    <span class="token-key">"role"</span>: <span class="token-string">"Software Engineer"</span>,
     <span class="token-key">"stack"</span>: [<span class="token-string">"Java"</span>, <span class="token-string">"Spring Boot"</span>, <span class="token-string">"PostgreSQL"</span>],
-    <span class="token-key">"openForCollaboration"</span>: <span class="token-boolean">true</span>,
-    <span class="token-key">"profileUrl"</span>: <span class="token-string">"https://devsystem.io/u/alex-dev"</span>
+    <span class="token-key">"openForCollaboration"</span>: <span class="token-boolean">true</span>
   }
 }</code></pre>
             </div>
         </div>
     </section>
 
-    <!-- Logo Strip -->
-    <section class="logo-section">
+    <!-- Skills strip — reuses the .skill-tag component from the public profile page -->
+    <section class="logo-section" id="skills">
         <div class="container">
-            <p class="text-label logo-title">Engineers on DevSystem contribute to projects at top organizations</p>
-            <div class="logo-grid">
-                <div class="logo-item">ACME CORP</div>
-                <div class="logo-item">CYPHER</div>
-                <div class="logo-item">NEXUS SAAS</div>
-                <div class="logo-item">STACKFLOW</div>
-                <div class="logo-item">VERITAS</div>
+            <p class="text-label logo-title">Technologies I work with</p>
+            <div class="skill-tags" style="justify-content: center;">
+                <span class="skill-tag">Java</span>
+                <span class="skill-tag">Spring Boot</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">JavaScript</span>
+                <span class="skill-tag">HTML5/CSS3</span>
+                <span class="skill-tag">JPA / Hibernate</span>
+                <span class="skill-tag">H2 · MySQL · PostgreSQL</span>
+                <span class="skill-tag">RESTful APIs</span>
+                <span class="skill-tag">Git &amp; GitHub</span>
+                <span class="skill-tag">Microcontroller Assembly</span>
             </div>
         </div>
     </section>
 
-    <!-- 3 Feature Grid -->
-    <section class="features-section" id="collaboration">
+    <!-- What this site actually is, for a technical visitor -->
+    <section class="features-section" id="projects">
         <div class="container">
             <div class="section-header">
-                <span class="text-label">Peer-to-Peer Network</span>
-                <h2>Built for Modern Developer Workflows</h2>
-                <p style="color: var(--slate-600);">Discover team members, showcase your real-world technical skills, and coordinate engineering efforts.</p>
+                <span class="text-label">About This Site</span>
+                <h2>A Living Developer Profile</h2>
+                <p style="color: var(--slate-600);">This portfolio is itself a Spring Boot application I built and maintain — here's what it does.</p>
             </div>
 
             <div class="feature-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    </div>
-                    <h3>Developer Connections</h3>
-                    <p>Find software engineers matching your target tech stack, project goals, and engineering philosophy.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                     </div>
-                    <h3>Unified Profile Endpoint</h3>
-                    <p>Share one clean link <code>/u/&lt;username&gt;</code> that showcases your repositories, stack, and active projects.</p>
+                    <h3>Live Profile Endpoint</h3>
+                    <p>One clean link shares my experience, education, skills, and projects — always current, no separate resume file to keep in sync.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
                     </div>
-                    <h3>Team Collaboration</h3>
-                    <p>Form project teams, coordinate open-source repositories, and build production applications together.</p>
+                    <h3>Auto-Generated CV</h3>
+                    <p>My downloadable CV is built straight from the same data behind this page — edit once, and both stay in sync.</p>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container stats-grid">
-            <div>
-                <div class="stat-value">10k+</div>
-                <div class="stat-label">Active Engineers</div>
-            </div>
-            <div>
-                <div class="stat-value">5,000+</div>
-                <div class="stat-label">Collaborative Projects</div>
-            </div>
-            <div>
-                <div class="stat-value">&lt;50ms</div>
-                <div class="stat-label">Profile API Response Time</div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6C16 6 12 2 12 2S8 6 8 6L2 12l6 6s4 4 4 4 4-4 4-4z"/></svg>
+                    </div>
+                    <h3>Built With Spring Boot</h3>
+                    <p>Java, Spring Boot, Thymeleaf, and PostgreSQL under the hood — this site is itself a working sample of how I build.</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Final CTA -->
-    <section class="cta-section">
+    <section class="cta-section" id="contact">
         <div class="cta-glow"></div>
         <div class="container cta-card">
-            <h2>Ready to Connect with Fellow Developers?</h2>
-            <p>Create your developer profile today, connect with engineers worldwide, and build something great together.</p>
-            <a class="btn btn-primary" th:href="@{/register}">Create Profile</a>
+            <h2>Want to Work Together?</h2>
+            <p>I'm always interested in new projects and opportunities — take a look at what I've built, or get in touch directly.</p>
+            <!-- TODO: replace with your real CV link and contact method -->
+            <a class="btn btn-primary" href="#">Download CV</a>
         </div>
     </section>
 
-    <!-- Enterprise Footer -->
+    <!-- Personal Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-grid">
+            <div class="footer-grid" style="grid-template-columns: 2fr 1fr;">
                 <div class="footer-brand">
                     <a href="#" class="brand-logo">
                         <div class="brand-icon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 18l6-6-6-6C16 6 12 2 12 2S8 6 8 6L2 12l6 6s4 4 4 4 4-4 4-4z"/></svg>
                         </div>
-                        DevSystem
+                        Lovemore Munetsi
                     </a>
-                    <p>The global identity and collaboration platform for software developers and engineers.</p>
+                    <p>Software developer building scalable web applications, robust back-end systems, and intuitive user experiences.</p>
                 </div>
 
                 <div class="footer-column">
-                    <h4>Platform</h4>
+                    <h4>Elsewhere</h4>
                     <ul>
-                        <li><a href="#">Discover Engineers</a></li>
-                        <li><a href="#">Project Collaboration</a></li>
-                        <li><a href="#">Developer Directory</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">API Reference</a></li>
-                        <li><a href="#">Community Guidelines</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
+                        <!-- TODO: fill in your real links -->
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="mailto:you@example.com">Email</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <span>&copy; 2026 Developer Profile System Inc. All rights reserved.</span>
-                <span class="text-label">Network Operational</span>
+                <span>&copy; 2026 Lovemore Munetsi. All rights reserved.</span>
             </div>
         </div>
     </footer>

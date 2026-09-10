@@ -8,6 +8,7 @@
 <body>
 <div th:replace="~{fragments/header :: site-header}"></div>
 <div class="auth-box">
+    
     <h1>Log in</h1>
     <p th:if="${param.registered}" class="success-banner">Account created — log in below.</p>
     <p th:if="${param.error}" class="error-banner">Incorrect email or password.</p>

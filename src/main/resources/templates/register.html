@@ -8,6 +8,14 @@
 <body>
 <div th:replace="~{fragments/header :: site-header}"></div>
 <div class="auth-box">
+    <div class="auth-box-header">
+        <span class="window-controls">
+            <span class="control"></span>
+            <span class="control"></span>
+            <span class="control"></span>
+        </span>
+        <span class="auth-box-path">~/login</span>
+    </div>
     <h1>Create your account</h1>
     <p th:if="${usernameTaken}" class="error-banner">An account with that email already exists.</p>
 
