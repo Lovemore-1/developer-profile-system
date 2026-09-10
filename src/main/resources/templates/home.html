@@ -6,14 +6,208 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<div class="landing">
-    <h1>Developer Profile System</h1>
-    <p>Create your professional profile, manage it securely, and share one link.</p>
-    <div class="landing-actions">
-        <a class="btn btn-primary" th:href="@{/register}">Create your profile</a>
-        <a class="btn btn-secondary" th:href="@{/login}">Log in</a>
-    </div>
-    <p class="hint">Already have a profile? Visit <code>/u/&lt;your-username&gt;</code> to see it live.</p>
-</div>
+
+    <!-- Sticky Navbar -->
+    <header class="nav-header">
+        <div class="container nav-container">
+            <a href="#" class="brand-logo">
+                <div class="brand-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 18l6-6-6-6C16 6 12 2 12 2S8 6 8 6L2 12l6 6s4 4 4 4 4-4 4-4z"/></svg>
+                </div>
+                DevSystem
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#discover">Discover</a></li>
+                    <li><a href="#collaboration">Collaboration</a></li>
+                    <li><a href="#developers">Developers</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <a class="btn btn-secondary" th:href="@{/login}">Log in</a>
+                <a class="btn btn-primary" th:href="@{/register}">Create Profile</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero bg-grid">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="badge-enterprise">
+                    <span class="badge-dot"></span>
+                    <span class="text-label">DEVELOPER NETWORK • OPEN COLLABORATION</span>
+                </div>
+                <h1 class="hero-title">Where Software Engineers Connect & Build Together</h1>
+                <p class="hero-subtitle">Create your verified professional developer identity, share your tech stack, discover like-minded peers, and launch open source or enterprise projects seamlessly.</p>
+                
+                <div class="hero-cta-group">
+                    <a class="btn btn-primary" th:href="@{/register}">Create Profile</a>
+                    <a class="btn btn-secondary" href="#discover">Explore Engineers</a>
+                </div>
+
+                <div class="social-proof">
+                    <div class="avatar-stack">
+                        <div></div><div></div><div></div>
+                    </div>
+                    <span>Joined by 10,000+ developers actively building together</span>
+                </div>
+            </div>
+
+            <!-- Profile JSON Code Window -->
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="window-controls">
+                        <span class="control"></span>
+                        <span class="control"></span>
+                        <span class="control"></span>
+                    </div>
+                    <span class="code-title">GET /u/&lt;username&gt;</span>
+                </div>
+                <pre class="code-body"><code>{
+  <span class="token-key">"status"</span>: <span class="token-string">"200_OK"</span>,
+  <span class="token-key">"developer"</span>: {
+    <span class="token-key">"username"</span>: <span class="token-string">"alex-dev"</span>,
+    <span class="token-key">"role"</span>: <span class="token-string">"Full-Stack Software Engineer"</span>,
+    <span class="token-key">"stack"</span>: [<span class="token-string">"Java"</span>, <span class="token-string">"Spring Boot"</span>, <span class="token-string">"PostgreSQL"</span>],
+    <span class="token-key">"openForCollaboration"</span>: <span class="token-boolean">true</span>,
+    <span class="token-key">"profileUrl"</span>: <span class="token-string">"https://devsystem.io/u/alex-dev"</span>
+  }
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Logo Strip -->
+    <section class="logo-section">
+        <div class="container">
+            <p class="text-label logo-title">Engineers on DevSystem contribute to projects at top organizations</p>
+            <div class="logo-grid">
+                <div class="logo-item">ACME CORP</div>
+                <div class="logo-item">CYPHER</div>
+                <div class="logo-item">NEXUS SAAS</div>
+                <div class="logo-item">STACKFLOW</div>
+                <div class="logo-item">VERITAS</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Feature Grid -->
+    <section class="features-section" id="collaboration">
+        <div class="container">
+            <div class="section-header">
+                <span class="text-label">Peer-to-Peer Network</span>
+                <h2>Built for Modern Developer Workflows</h2>
+                <p style="color: var(--slate-600);">Discover team members, showcase your real-world technical skills, and coordinate engineering efforts.</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Developer Connections</h3>
+                    <p>Find software engineers matching your target tech stack, project goals, and engineering philosophy.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    </div>
+                    <h3>Unified Profile Endpoint</h3>
+                    <p>Share one clean link <code>/u/&lt;username&gt;</code> that showcases your repositories, stack, and active projects.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <h3>Team Collaboration</h3>
+                    <p>Form project teams, coordinate open-source repositories, and build production applications together.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container stats-grid">
+            <div>
+                <div class="stat-value">10k+</div>
+                <div class="stat-label">Active Engineers</div>
+            </div>
+            <div>
+                <div class="stat-value">5,000+</div>
+                <div class="stat-label">Collaborative Projects</div>
+            </div>
+            <div>
+                <div class="stat-value">&lt;50ms</div>
+                <div class="stat-label">Profile API Response Time</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="cta-glow"></div>
+        <div class="container cta-card">
+            <h2>Ready to Connect with Fellow Developers?</h2>
+            <p>Create your developer profile today, connect with engineers worldwide, and build something great together.</p>
+            <a class="btn btn-primary" th:href="@{/register}">Create Profile</a>
+        </div>
+    </section>
+
+    <!-- Enterprise Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="brand-logo">
+                        <div class="brand-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 18l6-6-6-6C16 6 12 2 12 2S8 6 8 6L2 12l6 6s4 4 4 4 4-4 4-4z"/></svg>
+                        </div>
+                        DevSystem
+                    </a>
+                    <p>The global identity and collaboration platform for software developers and engineers.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Discover Engineers</a></li>
+                        <li><a href="#">Project Collaboration</a></li>
+                        <li><a href="#">Developer Directory</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Community Guidelines</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; 2026 Developer Profile System Inc. All rights reserved.</span>
+                <span class="text-label">Network Operational</span>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
