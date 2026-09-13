@@ -56,10 +56,13 @@
 
 body {
     background-color: var(--bg);
-    background-image: 
+    background-image:
         linear-gradient(to right, rgba(226, 232, 240, 0.5) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
-    background-size: 32px 32px;
+        linear-gradient(to bottom, rgba(226, 232, 240, 0.5) 1px, transparent 1px),
+        linear-gradient(to top, rgba(249, 87, 0, 0.34) 0%, rgba(148, 163, 184, 0.1) 55%, rgba(148, 163, 184, 0) 80%);
+    background-size: 32px 32px, 32px 32px, 100% 100%;
+    background-attachment: local, local, fixed;
+    background-repeat: repeat, repeat, no-repeat;
     color: var(--text);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     line-height: 1.5;
@@ -1060,8 +1063,11 @@ select {
     background-color: #f8fafc;
     background-image:
         linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-    background-size: 24px 24px;
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to top, rgba(249, 87, 0, 0.3) 0%, rgba(148, 163, 184, 0.09) 55%, rgba(148, 163, 184, 0) 80%);
+    background-size: 24px 24px, 24px 24px, 100% 100%;
+    background-attachment: local, local, fixed;
+    background-repeat: repeat, repeat, no-repeat;
 }
 
 .admin-sidebar {
@@ -1115,7 +1121,10 @@ select {
 
 .admin-table tr {
     box-shadow: inset 3px 0 0 transparent;
-    transition: box-shadow 0.15s ease, background-color 0.15s ease;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    z-index: 1;
 }
 
 .admin-table tr:not(:last-child) td {
@@ -1124,8 +1133,27 @@ select {
 
 .admin-table tr:hover,
 .admin-table tr:focus-within {
-    box-shadow: inset 3px 0 0 var(--accent);
+    box-shadow:
+        inset 3px 0 0 var(--accent),
+        0 10px 16px -4px rgba(249, 87, 0, 0.4),
+        0 20px 26px -8px rgba(249, 87, 0, 0.22);
     background-color: var(--surface-2);
+    transform: translateY(-8px);
+    z-index: 2;
+}
+
+.admin-table tr:active {
+    box-shadow:
+        0 0 0 2px rgba(249, 87, 0, 0.55),
+        0 10px 20px -4px rgba(249, 87, 0, 0.55),
+        0 24px 40px -10px rgba(249, 87, 0, 0.4),
+        0 40px 70px -18px rgba(249, 87, 0, 0.25),
+        inset 4px 0 0 var(--accent-bright);
+    background-color: var(--accent-light);
+}
+
+.admin-table tr:active td strong {
+    color: var(--accent-bright);
 }
 
 .admin-table td {
@@ -1169,7 +1197,9 @@ select {
     margin-right: 0;
     color: var(--muted);
     opacity: 0.7;
-    transition: opacity 0.15s ease, color 0.15s ease;
+    display: inline-block;
+    transition: opacity 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .admin-table tr:hover td:last-child a,
@@ -1187,6 +1217,13 @@ select {
 .admin-table td:last-child .link-button:hover,
 .admin-table td:last-child .link-button:focus-visible {
     color: var(--error);
+}
+
+.admin-table td:last-child a:active,
+.admin-table td:last-child .link-button:active {
+    opacity: 1;
+    transform: scale(0.92);
+    transition: transform 0.05s ease;
 }
 
 .sidebar-brand {
@@ -1261,7 +1298,7 @@ select {
     max-width: none;
     margin: 0;
     padding: 2rem 3rem;
-    background-color: var(--surface-2);
+    background-color: transparent;
 }
 
 .admin-shell .admin-nav {
@@ -1291,32 +1328,6 @@ select {
 .admin-shell button[type="submit"] {
     margin-top: 1.5rem;
     width: fit-content;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1.5rem;
-}
-
-.admin-table th {
-    text-align: left;
-    padding: 0.8rem 0.4rem;
-    color: var(--muted);
-    font-size: 0.875rem;
-    border-bottom: 2px solid var(--border);
-}
-
-.admin-table td {
-    padding: 0.8rem 0.4rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.95rem;
-}
-
-.admin-table a {
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-right: 1rem;
 }
 
 .link-button {
